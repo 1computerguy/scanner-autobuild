@@ -14,8 +14,12 @@ popd
 
 # Build Scan and Remediate containers
 pushd dod-compliance-and-automation
-docker build . -tag inspec-pwsh
-docker build . -f Dockerfile-ansible -tag ansible
+
+# Build Chef InSpec container
+docker build . -f docker/Docker-chef --tag inspec-pwsh
+
+# Build Ansible container
+docker build . -f docker/Dockerfile-ansible --tag docker-ansible
 
 # Setup scan and remediate automation scripts
 pushd scripts

@@ -45,9 +45,9 @@ RUN file=$(find / -name "VMware.PowerCLI.psd1" 2>/dev/null) && \
 
 # Copy inspec files to container and startup script into container
 RUN mkdir /inspec
-COPY inspec-license /etc/chef/accepted_licenses/inspec
-COPY inspec-scan.sh /usr/local/bin/scan.sh
-COPY ./vsphere/6.7/vcsa/inspec/* ./vsphere/6.7/vsphere/inspec/* /inspec/
+COPY ./docker/chef-install/inspec-license /etc/chef/accepted_licenses/inspec
+COPY ./docker/scripts/inspec-scan.sh /usr/local/bin/scan.sh
+COPY ./dod-compliance-and-automation/vsphere/6.7/vcsa/inspec/* ./vsphere/6.7/vsphere/inspec/* /inspec/
 
 # Set entrypoint permissions and accept license for InSpec
 RUN chmod +x /usr/local/bin/scan.sh && \
