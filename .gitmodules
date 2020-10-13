@@ -1,0 +1,7 @@
+[submodule "dod-compliance-and-automation"]
+	path = dod-compliance-and-automation
+	url = https://github.com/1computerguy/dod-compliance-and-automation.git
+	branch = host-vm-ansible
+[submodule "heimdall"]
+	path = heimdall
+	url = https://github.com/mitre/heimdall.git
