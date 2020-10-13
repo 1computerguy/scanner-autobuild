@@ -1,0 +1,8 @@
+---
+id: inspec
+name: Chef InSpec
+date_accepted: '<date>'
+accepting_product: inspec
+accepting_product_version: <ver>
+user: 
+file_format: 1

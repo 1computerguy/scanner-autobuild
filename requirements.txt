@@ -1,0 +1,8 @@
+pip
+cffi
+ansible==2.9.12
+mitogen
+ansible-lint
+jmespath
+pywinrm
+pyvmomi

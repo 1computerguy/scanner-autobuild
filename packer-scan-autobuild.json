@@ -1,0 +1,188 @@
+{
+  "variables": {
+      "disksize": "40960",
+      "vcenter_datastore": "datastore0",
+      "vcenter": "192.168.1.101",
+      "vcenter_password": "1qaz2wsx!QAZ@WSX",
+      "vcenter_username": "root",
+      "eth_type": "vmxnet3",
+      "host_portgroup": "Management",
+      "iso_checksum": "b3cac3a62659261af7ede1cbb81d5af544a26d19",
+      "iso_checksum_type": "sha1",
+      "iso_file": "./packer/ISO/photon-3.0.iso",
+      "numvcpus": "2",
+      "photon_ovf_template": "packer/templates/photon.xml.template",
+      "product_version": "3.0GA",
+      "ramsize": "4096",
+      "ssh_password": "SomeSecurePassword",
+      "ssh_username": "root",
+      "vmname": "STIG-Scanner",
+      "script_dir": "packer/scripts"
+  },
+  "builders": [
+    {
+      "name": "vmware-desktop",
+      "type": "vmware-iso",
+      "boot_command": [
+        "<esc><wait>",
+        "vmlinuz initrd=initrd.img root=/dev/ram0 loglevel=3 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart.json photon.media=cdrom",
+        "<enter>"
+      ],
+      "boot_wait": "5s",
+      "disk_size": "{{ user `disksize` }}",
+      "disk_type_id": 0,
+      "guest_os_type": "other3xlinux-64",
+      "headless": false,
+      "http_directory": "{{ user `script_dir` }}",
+      "iso_checksum": "{{user `iso_checksum_type`}}:{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_file`}}",
+      "shutdown_command": "shutdown -h now",
+      "ssh_password": "{{user `ssh_password`}}",
+      "ssh_timeout": "60m",
+      "ssh_username": "{{user `ssh_username`}}",
+      "version": 16,
+      "vm_name": "{{ user `vmname` }}",
+      "cpus": "{{ user `numvcpus` }}",
+      "memory": "{{ user `ramsize` }}",
+      "network_adapter_type": "{{ user `eth_type` }}",
+      "vmx_data_post": {
+        "displayname": "{{ user `vmname` }}",
+        "usb.present": "false"
+      },
+      "format": "ovf"
+    },
+    {
+      "name": "vmware-esxi",
+      "type": "vmware-iso",
+      "boot_command": [
+        "<esc><wait>",
+        "vmlinuz initrd=initrd.img root=/dev/ram0 loglevel=3 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart.json photon.media=cdrom",
+        "<enter>"
+      ],
+      "boot_wait": "10s",
+      "disk_size": "{{ user `disksize` }}",
+      "disk_type_id": "thin",
+      "format": "ovf",
+      "guest_os_type": "other3xlinux-64",
+      "headless": false,
+      "http_directory": "{{ user `script_dir` }}",
+      "iso_checksum": "{{ user `iso_checksum_type` }}:{{ user `iso_checksum` }}",
+      "iso_url": "{{ user `iso_file` }}",
+      "remote_datastore": "{{ user `vcenter_datastore` }}",
+      "remote_host": "{{ user `vcenter_host` }}",
+      "remote_password": "{{ user `vcenter_password` }}",
+      "remote_type": "esx5",
+      "remote_username": "{{ user `vcenter_username` }}",
+      "shutdown_command": "/sbin/shutdown -h now",
+      "skip_compaction": true,
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_port": 22,
+      "ssh_timeout": "60m",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "version": "16",
+      "vm_name": "{{ user `vmname` }}",
+      "vmx_data": {
+        "annotation": "Version: {{ user `version` }}",
+        "ethernet0.addressType": "generated",
+        "ethernet0.networkName": "{{ user `vcenter_portgroup` }}",
+        "ethernet0.present": "TRUE",
+        "ethernet0.startConnected": "TRUE",
+        "ethernet0.virtualDev": "{{ user `eth_type` }}",
+        "ethernet0.wakeOnPcktRcv": "FALSE",
+        "memsize": "{{ user `ramsize` }}",
+        "numvcpus": "{{ user `numvcpus` }}"
+      },
+      "vnc_disable_password": true
+    }
+  ],
+  "post-processors": [
+    {
+      "only_on": [
+        "linux"
+      ],
+      "type": "shell-local",
+      "environment_vars": ["PHOTON_VERSION={{ user `product_version` }}", "PHOTON_APPLIANCE_NAME={{ user `vmname` }}", "FINAL_PHOTON_APPLIANCE_NAME={{ user `vmname` }}_{{user `product_version`}}", "PHOTON_OVF_TEMPLATE={{ user `photon_ovf_template` }}"],
+      "inline": [
+        "cd manual",
+        "./add_ovf_properties.sh"
+      ]
+    },
+    {
+      "only_on": [
+        "linux"
+      ],
+      "only": [
+        "vmware-esxi"
+      ],
+      "type": "shell-local",
+      "inline": [
+        "pwsh -F unregister_vm.ps1 {{ user `vcenter_host` }} {{ user `vcenter_username` }} {{ user `vcenter_password` }} {{ user `vmname` }}"
+      ]
+    },
+    {
+      "only_on": [
+        "windows"
+      ],
+      "type": "shell-local",
+      "inline": [
+        "powershell.exe -ExecutionPolicy Bypass -NoExit -File {{ user `script_dir` }}/add_ovf_properties.ps1 {{ user `product_version` }} {{ user `vmname` }} {{ user `vmname` }}_{{user `product_version`}} {{ user `photon_ovf_template` }}"
+      ]
+    },
+    {
+      "only_on": [
+        "windows"
+      ],
+      "only": [
+        "vmware-esxi"
+      ],
+      "type": "shell-local",
+      "inline": [
+        "powershell.exe -ExecutionPolicy Bypass -NoExit -File {{ user `script_dir` }}/unregister_vm.ps1 {{ user `vcenter_host` }} {{ user `vcenter_username` }} {{ user `vcenter_password` }} {{ user `vmname` }}"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "script": "{{ user `script_dir` }}/install-packages.sh",
+      "type": "shell"
+    },
+    {
+      "script": "{{ user `script_dir` }}/build-environment.sh",
+      "type": "shell"
+    },
+    {
+      "script": "{{ user `script_dir` }}/user_provisioning.sh",
+      "type": "shell"
+    },
+    {
+      "inline": [
+        "sed -i '/linux/ s/$/ net.ifnames=0/' /boot/grub2/grub.cfg"
+      ],
+      "type": "shell"
+    },
+    {
+      "inline": [
+        "echo 'GRUB_CMDLINE_LINUX=\"net.ifnames=0\"' >> /etc/default/grub"
+      ],
+      "type": "shell"
+    },
+    {
+      "script": "{{ user `script_dir` }}/security_check.sh",
+      "type": "shell"
+    },
+    {
+      "inline": [
+        "sed -i 's/OS/Linux/' /etc/photon-release"
+      ],
+      "type": "shell"
+    },
+    {
+      "script": "{{ user `script_dir` }}/remove-packages.sh",
+      "type": "shell"
+    },
+    {
+      "script": "{{ user `script_dir` }}/photon-cleanup.sh",
+      "type": "shell"
+    }
+  ]
+}

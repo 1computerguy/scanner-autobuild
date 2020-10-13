@@ -6,3 +6,13 @@ crash.log
 
 # For built boxes
 *.box
+
+# Ignore OVA files
+*.ova
+
+# Ignore ISO files
+*.iso
+
+# Ignore packer build and output folders
+packer_cache/
+output-*/
