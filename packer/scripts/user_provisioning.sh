@@ -25,7 +25,7 @@ echo -e "$PASSWORD\n$PASSWORD" | passwd scanadmin
 
 echo '> Setting global path environment variable for users...'
 # Set global path
-echo "/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin" >> /etc/environment
+echo "PATH=/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin" >> /etc/environment
 
 echo '> Adding scanadmin user to docker group...'
 # Add Photon user to Docker group
