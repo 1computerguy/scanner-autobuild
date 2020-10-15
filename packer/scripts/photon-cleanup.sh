@@ -4,16 +4,38 @@
 ## cleanup everything we can to make the OVA as small as possible
 ##
 
-# Clear tdnf cache
+echo '> Enable setup script to configure system on intial boot...'
+systemctl daemon-reload
+systemctl enable setup
+
+# Set startup script permissions
+chmod +x /root/setup.sh
+
+# Remove packages and clear tdnf cache
+echo '> Removing unnecessary packages...'
+tdnf --assumeyes remove \
+                 openldap \
+                 cyrus-sasl \
+                 serf \
+                 subversion \
+                 apr \
+                 utf8proc \
+                 apr-util \
+                 subversion-perl \
+                 python2-libs \
+                 python2 perl \
+                 perl-DBI \
+                 perl-YAML \
+                 perl-CGI \
+                 git 
 
 echo '> Clearing tdnf cache...'
 tdnf clean all
 
-
 # Cleanup log files
 echo '> Removing Log files...'
 cat /dev/null > /var/log/wtmp 2>/dev/null
-logrotate -f /etc/logrotate.conf 2>/dev/null
+#logrotate -f /etc/logrotate.conf 2>/dev/null
 find /var/log -type f -delete
 rm -rf /var/log/journal/*
 rm -f /var/lib/dhcp/*

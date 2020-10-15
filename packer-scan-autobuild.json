@@ -5,6 +5,9 @@
       "vcenter": "192.168.1.101",
       "vcenter_password": "1qaz2wsx!QAZ@WSX",
       "vcenter_username": "root",
+      "vcenter_datacenter": "",
+      "vcenter_cluster": "",
+      "vcenter_vmfolder": "",
       "eth_type": "vmxnet3",
       "host_portgroup": "Management",
       "iso_checksum": "b3cac3a62659261af7ede1cbb81d5af544a26d19",
@@ -17,7 +20,8 @@
       "ssh_password": "SomeSecurePassword",
       "ssh_username": "root",
       "vmname": "STIG-Scanner",
-      "script_dir": "packer/scripts"
+      "script_dir": "packer/scripts",
+      "output_path": "output-vmware-desktop"
   },
   "builders": [
     {
@@ -47,51 +51,50 @@
       "network_adapter_type": "{{ user `eth_type` }}",
       "vmx_data_post": {
         "displayname": "{{ user `vmname` }}",
-        "usb.present": "false"
+        "usb.present": false
       },
       "format": "ovf"
     },
     {
       "name": "vmware-esxi",
-      "type": "vmware-iso",
+      "type": "vsphere-iso",
       "boot_command": [
         "<esc><wait>",
         "vmlinuz initrd=initrd.img root=/dev/ram0 loglevel=3 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart.json photon.media=cdrom",
         "<enter>"
       ],
       "boot_wait": "10s",
-      "disk_size": "{{ user `disksize` }}",
-      "disk_type_id": "thin",
-      "format": "ovf",
+      "convert_to_template": true,
       "guest_os_type": "other3xlinux-64",
       "headless": false,
       "http_directory": "{{ user `script_dir` }}",
       "iso_checksum": "{{ user `iso_checksum_type` }}:{{ user `iso_checksum` }}",
       "iso_url": "{{ user `iso_file` }}",
-      "remote_datastore": "{{ user `vcenter_datastore` }}",
-      "remote_host": "{{ user `vcenter_host` }}",
-      "remote_password": "{{ user `vcenter_password` }}",
-      "remote_type": "esx5",
-      "remote_username": "{{ user `vcenter_username` }}",
-      "shutdown_command": "/sbin/shutdown -h now",
-      "skip_compaction": true,
-      "ssh_password": "{{ user `ssh_password` }}",
-      "ssh_port": 22,
-      "ssh_timeout": "60m",
-      "ssh_username": "{{ user `ssh_username` }}",
+      "username": "{{ user `vcenter_username` }}",
+      "password": "{{ user `vcenter_password` }}",
+      "insecure_connection": true,
+      "datacenter": "{{ user `vcenter_datacenter` }}",
+      "datastore": "{{ user `vcenter_datastore` }}",
+      "cluster": "{{ user `vcenter_cluster` }}",
+      "folder": "{{ user `vcenter_vmfolder` }}",
+      "vcenter_type": "esx5",
       "version": "16",
       "vm_name": "{{ user `vmname` }}",
-      "vmx_data": {
-        "annotation": "Version: {{ user `version` }}",
-        "ethernet0.addressType": "generated",
-        "ethernet0.networkName": "{{ user `vcenter_portgroup` }}",
-        "ethernet0.present": "TRUE",
-        "ethernet0.startConnected": "TRUE",
-        "ethernet0.virtualDev": "{{ user `eth_type` }}",
-        "ethernet0.wakeOnPcktRcv": "FALSE",
-        "memsize": "{{ user `ramsize` }}",
-        "numvcpus": "{{ user `numvcpus` }}"
-      },
+      "CPUs": "{{ user `numvcpus` }}",
+      "RAM": "{{ user `memory` }}",
+      "network_adapters": [
+        {
+          "network": "{{ user `vcenter_portgroup` }}",
+          "network_card": "{{ user `eth_type` }}"
+        }
+      ],
+      "storage": [
+        {
+          "disk_size": "{{ user `disksize` }}",
+          "disk_controller_index": 0,
+          "disk_thin_provisioned": true
+        }
+      ],
       "vnc_disable_password": true
     }
   ],
@@ -109,23 +112,11 @@
     },
     {
       "only_on": [
-        "linux"
-      ],
-      "only": [
-        "vmware-esxi"
-      ],
-      "type": "shell-local",
-      "inline": [
-        "pwsh -F unregister_vm.ps1 {{ user `vcenter_host` }} {{ user `vcenter_username` }} {{ user `vcenter_password` }} {{ user `vmname` }}"
-      ]
-    },
-    {
-      "only_on": [
         "windows"
       ],
       "type": "shell-local",
       "inline": [
-        "powershell.exe -ExecutionPolicy Bypass -NoExit -File {{ user `script_dir` }}/add_ovf_properties.ps1 {{ user `product_version` }} {{ user `vmname` }} {{ user `vmname` }}_{{user `product_version`}} {{ user `photon_ovf_template` }}"
+        "powershell.exe -ExecutionPolicy Bypass -NoExit -File {{ user `script_dir` }}/add_ovf_properties.ps1 {{ user `product_version` }} {{ user `vmname` }} {{ user `vmname` }}_{{user `product_version`}} {{ user `photon_ovf_template` }} {{ user `output_path` }}"
       ]
     },
     {
@@ -143,15 +134,11 @@
   ],
   "provisioners": [
     {
-      "script": "{{ user `script_dir` }}/install-packages.sh",
-      "type": "shell"
-    },
-    {
-      "script": "{{ user `script_dir` }}/build-environment.sh",
-      "type": "shell"
-    },
-    {
       "script": "{{ user `script_dir` }}/user_provisioning.sh",
+      "type": "shell"
+    },
+    {
+      "script": "{{ user `script_dir` }}/install-packages.sh",
       "type": "shell"
     },
     {
@@ -177,8 +164,14 @@
       "type": "shell"
     },
     {
-      "script": "{{ user `script_dir` }}/remove-packages.sh",
-      "type": "shell"
+      "type": "file",
+      "source": "{{ user `script_dir` }}/setup.service",
+      "destination": "/lib/systemd/system/setup.service"
+    },
+    {
+      "type": "file",
+      "source": "{{ user `script_dir` }}/setup.sh",
+      "destination": "/root/setup.sh"
     },
     {
       "script": "{{ user `script_dir` }}/photon-cleanup.sh",
