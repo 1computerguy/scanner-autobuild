@@ -1,3 +1,4 @@
+    </VirtualHardwareSection>
     <ProductSection ovf:required="true">
     <Info>Information about the installed software</Info>
       <Product>STIG Scan and Remediation Appliance</Product>
@@ -29,11 +30,11 @@
             <Description>DNS Domain</Description>
         </Property>
         <Category>Credentials</Category>
-        <Property ovf:key="guestinfo.root_password" ovf:password="true" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
-            <Label>Root Password</Label>
-            <Description>Password to login in as root. Please use a secure password</Description>
+        <Property ovf:key="guestinfo.scanadmin_password" ovf:password="true" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
+            <Label>Scan Administrator Password</Label>
+            <Description>Password to login in as scanadmin. Please use a secure password - Root account cannot be logged into, use "sudo su -" from scanadmin to log administer the system as root.</Description>
         </Property>
-        <Category>zDebug</Category>
+        <Category>Debug</Category>
         <Property ovf:key="guestinfo.debug" ovf:type="boolean" ovf:userConfigurable="true" ovf:value="false">
             <Label>Debugging</Label>
             <Description>Enable Debugging</Description>

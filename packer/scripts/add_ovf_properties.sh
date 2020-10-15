@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OUTPUT_PATH="../output-vmware-esxi"
+OUTPUT_PATH="output-vmware-desktop"
 
 rm -f ${OUTPUT_PATH}/${PHOTON_APPLIANCE_NAME}/${PHOTON_APPLIANCE_NAME}.mf
 
