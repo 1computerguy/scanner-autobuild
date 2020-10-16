@@ -168,6 +168,11 @@
       "destination": "/home/scanadmin/docker-compose.yml"
     },
     {
+      "type": "file",
+      "source": "{{ user `env_dir` }}/.bashrc",
+      "destination": "/home/scanadmin/.bashrc"
+    },
+    {
       "script": "{{ user `script_dir` }}/build-containers.sh",
       "type": "shell"
     },
@@ -188,11 +193,6 @@
         "sed -i 's/OS/Linux/' /etc/photon-release"
       ],
       "type": "shell"
-    },
-    {
-      "type": "file",
-      "source": "{{ user `env_dir` }}/.bashrc",
-      "destination": "/home/scanadmin/.bashrc"
     },
     {
       "type": "file",
