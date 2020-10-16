@@ -153,7 +153,22 @@
       "destination": "/usr/local/bin/scan"
     },
     {
-      "script": "{{ user `script_dir` }}/build-environment.sh",
+      "type": "file",
+      "source": "{{ user `env_dir` }}/.creds",
+      "destination": "/home/scanadmin/.creds"
+    },
+    {
+      "type": "file",
+      "source": "{{ user `env_dir` }}/.env",
+      "destination": "/home/scanadmin/.env"
+    },
+    {
+      "type": "file",
+      "source": "{{ user `env_dir` }}/docker-compose.yml",
+      "destination": "/home/scanadmin/docker-compose.yml"
+    },
+    {
+      "script": "{{ user `script_dir` }}/build-containers.sh",
       "type": "shell"
     },
     {
@@ -166,10 +181,6 @@
       "inline": [
         "echo 'GRUB_CMDLINE_LINUX=\"net.ifnames=0\"' >> /etc/default/grub"
       ],
-      "type": "shell"
-    },
-    {
-      "script": "{{ user `script_dir` }}/security_check.sh",
       "type": "shell"
     },
     {
@@ -194,19 +205,8 @@
       "destination": "/root/setup.sh"
     },
     {
-      "type": "file",
-      "source": "{{ user `env_dir` }}/.creds",
-      "destination": "/home/scanadmin/.creds"
-    },
-    {
-      "type": "file",
-      "source": "{{ user `env_dir` }}/.env",
-      "destination": "/home/scanadmin/.env"
-    },
-    {
-      "type": "file",
-      "source": "{{ user `env_dir` }}/docker-compose.yml",
-      "destination": "/home/scanadmin/docker-compose.yml"
+      "script": "{{ user `script_dir` }}/security_check.sh",
+      "type": "shell"
     },
     {
       "script": "{{ user `script_dir` }}/photon-cleanup.sh",
