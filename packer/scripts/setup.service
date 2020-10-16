@@ -1,7 +1,7 @@
 [Unit]
 Description=Initial Setup Script
-After=local-fs.target network-online.target network.target
-Wants=local-fs.target network-online.target network.target
+After=vmtoolsd.target
+Wants=vmtoolsd.target
 ConditionPathExists=!/root/.ran_customization
 
 [Service]

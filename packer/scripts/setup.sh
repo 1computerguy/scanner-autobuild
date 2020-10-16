@@ -9,19 +9,6 @@ if [ -e /root/.ran_customization ]; then
 else
     NETWORK_CONFIG_FILE=$(ls /etc/systemd/network | grep .network)
 
-    DEBUG_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "guestinfo.debug")
-    DEBUG=$(echo "${DEBUG_PROPERTY}" | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
-    LOG_FILE=/var/log/bootstrap.log
-    if [ ${DEBUG} == "True" ]; then
-        LOG_FILE=/var/log/photon-customization-debug.log
-        set -x
-        exec 2> ${LOG_FILE}
-        echo
-        echo "### WARNING -- DEBUG LOG CONTAINS ALL EXECUTED COMMANDS WHICH INCLUDES CREDENTIALS -- WARNING ###"
-        echo "### WARNING --             PLEASE REMOVE CREDENTIALS BEFORE SHARING LOG            -- WARNING ###"
-        echo
-    fi
-
     HOSTNAME_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "guestinfo.hostname")
     IP_ADDRESS_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "guestinfo.ipaddress")
     NETMASK_PROPERTY=$(vmtoolsd --cmd "info-get guestinfo.ovfEnv" | grep "guestinfo.netmask")
@@ -70,7 +57,7 @@ __CUSTOMIZE_PHOTON__
     systemctl restart systemd-networkd
     fi
 
-    echo -e "\e[92mConfiguring scanadmin password ..." > /dev/console
+    echo -e "\e[92mConfiguring scanadmin password ...\e[0m" > /dev/console
     SCANADMIN_PASSWORD=$(echo "${SCANADMIN_PASSWORD_PROPERTY}" | awk -F 'oe:value="' '{print $2}' | awk -F '"' '{print $1}')
     echo "scanadmin:${SCANADMIN_PASSWORD}" | /usr/sbin/chpasswd
 

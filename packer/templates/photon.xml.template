@@ -32,11 +32,6 @@
         <Category>Credentials</Category>
         <Property ovf:key="guestinfo.scanadmin_password" ovf:password="true" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
             <Label>Scan Administrator Password</Label>
-            <Description>Password to login in as scanadmin. Please use a secure password - Root account cannot be logged into, use "sudo su -" from scanadmin to log administer the system as root.</Description>
-        </Property>
-        <Category>Debug</Category>
-        <Property ovf:key="guestinfo.debug" ovf:type="boolean" ovf:userConfigurable="true" ovf:value="false">
-            <Label>Debugging</Label>
-            <Description>Enable Debugging</Description>
+            <Description>Password to login in as scanadmin. Please use a secure password - Root account is locked.</Description>
         </Property>
     </ProductSection>
