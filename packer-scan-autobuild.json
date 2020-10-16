@@ -20,7 +20,8 @@
       "ssh_password": "SomeSecurePassword",
       "ssh_username": "root",
       "vmname": "STIG-Scanner",
-      "script_dir": "packer/scripts",
+      "script_dir": "packer/setup-scripts",
+      "env_dir": "packer/environment",
       "output_path": "output-vmware-desktop"
   },
   "builders": [
@@ -142,6 +143,20 @@
       "type": "shell"
     },
     {
+      "type": "file",
+      "source": "{{ user `env_dir` }}/remediate.sh",
+      "destination": "/usr/local/bin/remediate"
+    },
+    {
+      "type": "file",
+      "source": "{{ user `env_dir` }}/scan.sh",
+      "destination": "/usr/local/bin/scan"
+    },
+    {
+      "script": "{{ user `script_dir` }}/build-environment.sh",
+      "type": "shell"
+    },
+    {
       "inline": [
         "sed -i '/linux/ s/$/ net.ifnames=0/' /boot/grub2/grub.cfg"
       ],
@@ -165,13 +180,33 @@
     },
     {
       "type": "file",
-      "source": "{{ user `script_dir` }}/setup.service",
+      "source": "{{ user `env_dir` }}/.bashrc",
+      "destination": "/home/scanadmin/.bashrc"
+    },
+    {
+      "type": "file",
+      "source": "{{ user `env_dir` }}/setup.service",
       "destination": "/lib/systemd/system/setup.service"
     },
     {
       "type": "file",
-      "source": "{{ user `script_dir` }}/setup.sh",
+      "source": "{{ user `env_dir` }}/setup.sh",
       "destination": "/root/setup.sh"
+    },
+    {
+      "type": "file",
+      "source": "{{ user `env_dir` }}/.creds",
+      "destination": "/home/scanadmin/.creds"
+    },
+    {
+      "type": "file",
+      "source": "{{ user `env_dir` }}/.env",
+      "destination": "/home/scanadmin/.env"
+    },
+    {
+      "type": "file",
+      "source": "{{ user `env_dir` }}/docker-compose.yml",
+      "destination": "/home/scanadmin/docker-compose.yml"
     },
     {
       "script": "{{ user `script_dir` }}/photon-cleanup.sh",
