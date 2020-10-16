@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PASSWORD="SomeSecurePassword"
+PASSWORD="SomeDefaultPassword"
 
 HOME_DIR="/home/scanadmin"
 
@@ -12,7 +12,7 @@ groupadd scanadmin
 useradd -G scanadmin -m scanadmin
 
 echo '> Setting scanadmin password to never expire...'
-# Avoid password expiration (https://github.com/vmware/photon-packer-templates/issues/2)
+# Avoid password expiration
 chage -I -1 -m 0 -M 99999 -E -1 scanadmin
 
 echo '> Adding scanadmin to sudoers file...'

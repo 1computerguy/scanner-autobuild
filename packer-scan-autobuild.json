@@ -1,29 +1,32 @@
 {
   "variables": {
-      "disksize": "40960",
-      "vcenter_datastore": "datastore0",
-      "vcenter": "192.168.1.101",
-      "vcenter_password": "1qaz2wsx!QAZ@WSX",
-      "vcenter_username": "root",
-      "vcenter_datacenter": "",
-      "vcenter_cluster": "",
-      "vcenter_vmfolder": "",
-      "eth_type": "vmxnet3",
-      "host_portgroup": "Management",
-      "iso_checksum": "b3cac3a62659261af7ede1cbb81d5af544a26d19",
-      "iso_checksum_type": "sha1",
-      "iso_file": "./packer/ISO/photon-3.0.iso",
-      "numvcpus": "2",
-      "photon_ovf_template": "packer/templates/photon.xml.template",
-      "product_version": "3.0GA",
-      "ramsize": "4096",
-      "ssh_password": "SomeSecurePassword",
-      "ssh_username": "root",
-      "vmname": "STIG-Scanner",
-      "script_dir": "packer/setup-scripts",
-      "env_dir": "packer/environment",
-      "output_path": "output-vmware-desktop"
+    "vmname": "STIG-Scanner",
+    "iso_file": "./packer/ISO/photon-3.0.iso",
+    "iso_checksum": "sha1:b3cac3a62659261af7ede1cbb81d5af544a26d19",
+    "photon_username": "root",
+    "photon_password": "SomeSecurePassword",
+    "numvcpus": "2",
+    "ramsize": "4096",
+    "disksize": "40960",
+    "eth_type": "vmxnet3",
+    "vcenter_password": "1234qweradsf",
+    "vcenter_username": "root",
+    "vcenter_datastore": "datastore0",
+    "vcenter": "vcenter.test.local",
+    "vcenter_datacenter": "home",
+    "vcenter_cluster": "home",
+    "vcenter_vmfolder": "vms",
+    "vcenter_portgroup": "Management",
+    "script_dir": "packer/setup-scripts",
+    "env_dir": "packer/environment",
+    "output_path": "output-vmware-desktop",
+    "photon_ovf_template": "packer/templates/photon.xml.template",
+    "photon_version": "3.0GA"
   },
+  "sensitive-variables": [
+    "vcenter_password",
+    "photon_password"
+  ],
   "builders": [
     {
       "name": "vmware-desktop",
@@ -39,12 +42,12 @@
       "guest_os_type": "other3xlinux-64",
       "headless": false,
       "http_directory": "{{ user `script_dir` }}",
-      "iso_checksum": "{{user `iso_checksum_type`}}:{{user `iso_checksum`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
       "iso_url": "{{user `iso_file`}}",
       "shutdown_command": "shutdown -h now",
-      "ssh_password": "{{user `ssh_password`}}",
+      "photon_password": "{{user `photon_password`}}",
       "ssh_timeout": "60m",
-      "ssh_username": "{{user `ssh_username`}}",
+      "photon_username": "{{user `photon_username`}}",
       "version": 16,
       "vm_name": "{{ user `vmname` }}",
       "cpus": "{{ user `numvcpus` }}",
@@ -105,7 +108,7 @@
         "linux"
       ],
       "type": "shell-local",
-      "environment_vars": ["PHOTON_VERSION={{ user `product_version` }}", "PHOTON_APPLIANCE_NAME={{ user `vmname` }}", "FINAL_PHOTON_APPLIANCE_NAME={{ user `vmname` }}_{{user `product_version`}}", "PHOTON_OVF_TEMPLATE={{ user `photon_ovf_template` }}"],
+      "environment_vars": ["PHOTON_VERSION={{ user `photon_version` }}", "PHOTON_APPLIANCE_NAME={{ user `vmname` }}", "FINAL_PHOTON_APPLIANCE_NAME={{ user `vmname` }}_{{user `photon_version`}}", "PHOTON_OVF_TEMPLATE={{ user `photon_ovf_template` }}"],
       "inline": [
         "cd manual",
         "./add_ovf_properties.sh"
@@ -117,7 +120,7 @@
       ],
       "type": "shell-local",
       "inline": [
-        "powershell.exe -ExecutionPolicy Bypass -NoExit -File {{ user `script_dir` }}/add_ovf_properties.ps1 {{ user `product_version` }} {{ user `vmname` }} {{ user `vmname` }}_{{user `product_version`}} {{ user `photon_ovf_template` }} {{ user `output_path` }}"
+        "powershell.exe -ExecutionPolicy Bypass -NoExit -File {{ user `script_dir` }}/add_ovf_properties.ps1 {{ user `photon_version` }} {{ user `vmname` }} {{ user `vmname` }}_{{user `photon_version`}} {{ user `photon_ovf_template` }} {{ user `output_path` }}"
       ]
     },
     {
