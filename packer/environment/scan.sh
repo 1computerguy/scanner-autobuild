@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 function help () {
     echo ""
@@ -105,95 +105,102 @@ function creds () {
 
 [[ -z "$@" ]] && echo "You must provide an argument. Use --help or -h to get additional information."
 
-while [ $1 ]
-do
-    case $1
-    in
-        --vm | -m )
-            shift
-            VMSCAN="$1"
-            ;;
-        --host | -t )
-            shift
-            HSCAN="$1"
-            ;;
-        --vcenter | -v )
-            VCSCAN="1"
-            ;;
-        --vc )
-            shift
-            VCENTER="$1"
-            VC_BASE=$(echo $VCENTER | cut -d'.' -f1)
-            PHOTON_IP=$(dig +short $VCENTER)
-            ;;
-        --all | -a )
-            VMSCAN="all"
-            HSCAN="all"
-            VCSCAN="1"
-            ;;
-        --upload | -u )
-            UPLOAD="1"
-            ;;
-        --control | -c )
-            shift
-            CONTROL="$1"
-            ;;
-        --syslog | -s )
-            shift
-            SYSLOG=$1
-            ;;
-        --ntp1 )
-            shift
-            NTP1=$1
-            ;;
-        --ntp2 )
-            shift
-            NTP2=$1
-            ;;
-        --ntp | -n )
-            if [[ $NTP1 == '' ]]
-            then
+if [[ "$1" == "-e" ]]
+then
+    source "$2"
+    VC_BASE=$(echo $VCENTER | cut -d'.' -f1)
+    PHOTON_IP=$(dig +short $VCENTER)
+else
+    while [ $1 ]
+    do
+        case $1
+        in
+            --vm | -m )
+                shift
+                VMSCAN="$1"
+                ;;
+            --host | -t )
+                shift
+                HSCAN="$1"
+                ;;
+            --vcenter | -v )
+                VCSCAN="1"
+                ;;
+            --vc )
+                shift
+                VCENTER="$1"
+                VC_BASE=$(echo $VCENTER | cut -d'.' -f1)
+                PHOTON_IP=$(dig +short $VCENTER)
+                ;;
+            --all | -a )
+                VMSCAN="all"
+                HSCAN="all"
+                VCSCAN="1"
+                ;;
+            --upload | -u )
+                UPLOAD="1"
+                ;;
+            --control | -c )
+                shift
+                CSCAN="$1"
+                ;;
+            --syslog | -s )
+                shift
+                SYSLOG=$1
+                ;;
+            --ntp1 )
                 shift
                 NTP1=$1
-            elif [[ ! $NTP1 == '' ]]
-            then
+                ;;
+            --ntp2 )
                 shift
                 NTP2=$1
-            fi
-            ;;
-        --basedir | -b )
-            shift
-            BASE_DIR=$1
-            ;;
-        --force | -f )
-            FORCE="force"
-            ;;
-        --creds | -d )
-            shift
-            creds $1
-            ;;
-        --vcuser )
-            shift
-            USER=$1
-            ;;
-        --vcpass )
-            shift
-            PASS="$1"
-            ;;
-        --sshu )
-            shift
-            SSH_USER="$1"
-            ;;
-        --sshp )
-            shift
-            SSH_PASS="$1"
-            ;;
-        --help | -h )
-            help
-            ;;
-    esac
-    shift
-done
+                ;;
+            --ntp | -n )
+                if [[ $NTP1 == '' ]]
+                then
+                    shift
+                    NTP1=$1
+                elif [[ ! $NTP1 == '' ]]
+                then
+                    shift
+                    NTP2=$1
+                fi
+                ;;
+            --basedir | -b )
+                shift
+                BASE_DIR=$1
+                ;;
+            --force | -f )
+                FORCE="force"
+                ;;
+            --creds | -d )
+                shift
+                creds $1
+                ;;
+            --vcuser )
+                shift
+                USER=$1
+                ;;
+            --vcpass )
+                shift
+                PASS="$1"
+                ;;
+            --sshu )
+                shift
+                SSH_USER="$1"
+                ;;
+            --sshp )
+                shift
+                SSH_PASS="$1"
+                ;;
+            --help | -h )
+                help
+                ;;
+        esac
+        shift
+    done
+fi
 
 # Set Date
 RUN_DATE=$(date +"%m%d%Y")
