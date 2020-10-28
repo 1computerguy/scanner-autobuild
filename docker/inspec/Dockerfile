@@ -46,7 +46,7 @@ RUN file=$(find / -name "VMware.PowerCLI.psd1" 2>/dev/null) && \
 # Copy inspec files to container and startup script into container
 RUN mkdir /inspec
 COPY ./inspec-license /etc/chef/accepted_licenses/inspec
-COPY ./scripts/inspec-scan.sh /usr/local/bin/scan.sh
+COPY ./scripts/inspec-scan.sh /usr/local/bin/scan
 
 # Set entrypoint permissions and accept license for InSpec
 RUN chmod +x /usr/local/bin/scan.sh && \
@@ -55,4 +55,5 @@ RUN chmod +x /usr/local/bin/scan.sh && \
 
 WORKDIR /inspec
 
-ENTRYPOINT ["scan.sh"]
+ENTRYPOINT ["scan"]
+CMD ["-h"]
