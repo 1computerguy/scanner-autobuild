@@ -4,6 +4,8 @@ This is a Packer auto-built appliance using Photon and Docker to run the draft v
 ## Build instructions
  - NOTE: This is how I built and tested it so far, as additional means are validated, they will be written up here.
 
+---
+
 ### Install Chocolatey (this was used to install Packer)
  - Open a PowerShell terminal as an administrator
  - Run the following command to download an install Chocolatey
@@ -11,6 +13,8 @@ This is a Packer auto-built appliance using Photon and Docker to run the draft v
    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
    ```
  - Next, run `choco install packer`
+
+---
 
 ### Download scanner-autobuild repository
  - Download this repository from github:
@@ -20,9 +24,12 @@ This is a Packer auto-built appliance using Photon and Docker to run the draft v
      2) Select `Download Zip`
      3) Unzip the file to a folder on your computer
 
+---
+
 ### Modify Packer build variables
 There is a variables section at the top of the packer-scan-autobuild.json file to configure for your environment. Below are the different variables you can configure and why you care.
 
+---
 
 ### Build appliance with Packer
  - Make sure ovftool is installed and added to your PATH environment variable (if you have VMware Workstation installed, you have ovftool)
