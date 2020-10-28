@@ -7,7 +7,9 @@ This is a Packer auto-built appliance using Photon and Docker to run the draft v
 ### Install Chocolatey (this was used to install Packer)
  - Open a PowerShell terminal as an administrator
  - Run the following command to install download an install Chocolatey
-   `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))`
+   ```
+   Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+   ```
  - Next, run `choco install packer`
 
 ### Download scanner-autobuild repository
