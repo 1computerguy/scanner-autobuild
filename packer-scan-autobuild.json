@@ -2,6 +2,7 @@
   "variables": {
     "vmname": "STIG-Scanner",
     "iso_file": "./packer/ISO/photon-3.0.iso",
+    "iso_url": "https://packages.vmware.com/photon/3.0/Rev3/iso/photon-3.0-a383732.iso",
     "iso_checksum": "sha1:b3cac3a62659261af7ede1cbb81d5af544a26d19",
     "photon_username": "root",
     "photon_password": "SomeSecurePassword",
@@ -42,12 +43,15 @@
       "guest_os_type": "other3xlinux-64",
       "headless": false,
       "http_directory": "{{ user `script_dir` }}",
-      "iso_checksum": "{{user `iso_checksum`}}",
-      "iso_url": "{{user `iso_file`}}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_urls": [
+        "{{ user `iso_file` }}",
+        "{{ user `iso_url` }}"
+      ],
       "shutdown_command": "shutdown -h now",
-      "photon_password": "{{user `photon_password`}}",
+      "photon_password": "{{ user `photon_password` }}",
       "ssh_timeout": "60m",
-      "photon_username": "{{user `photon_username`}}",
+      "photon_username": "{{ user `photon_username` }}",
       "version": 16,
       "vm_name": "{{ user `vmname` }}",
       "cpus": "{{ user `numvcpus` }}",
@@ -73,7 +77,10 @@
       "headless": false,
       "http_directory": "{{ user `script_dir` }}",
       "iso_checksum": "{{ user `iso_checksum_type` }}:{{ user `iso_checksum` }}",
-      "iso_url": "{{ user `iso_file` }}",
+      "iso_urls": [
+        "{{ user `iso_file` }}",
+        "{{ user `iso_url` }}"
+      ],
       "username": "{{ user `vcenter_username` }}",
       "password": "{{ user `vcenter_password` }}",
       "insecure_connection": true,
