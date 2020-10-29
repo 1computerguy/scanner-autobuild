@@ -13,7 +13,13 @@ docker-compose run --rm web rake db:create db:migrate
 popd
 
 echo '> Building and configuring dod scanner...'
-docker-compose build --force-rm
+pushd ./scanner-autobuild/docker/inspec
+docker build . --tag inspec-pwsh
+popd
+
+pushd ./scanner-autobuild/docker/ansible
+docker build . --tag ansible
+popd
 
 echo '> Making scan and remediate scripts executable...'
 # Setup scan and remediate automation scripts
