@@ -9,18 +9,14 @@ For more information about the existing vSphere STIG and Security Requirements G
 * [VMware DoD Compliance and Automation - vSphere v6.7 STIG (Draft)](https://github.com/vmware/dod-compliance-and-automation)
 
 
-### Appliance Deployment
-
----
+## Appliance Deployment
 
 For Install instructions refer to the install (INSTALL.md) document in this repository.
 
 * [Appliance Install and Deployment](https://github.com/1computerguy/scanner-autobuild/blob/main/INSTALL.md)
 
 
-### Scan Script usage
-
----
+## Scan Script usage
 
 For scanner usage instructions refer to the usage documenation in this repository (or use the `scan -h` command once you log into the appliance)
 
