@@ -14,7 +14,7 @@ This is a Packer auto-built appliance using Photon and Docker to run the draft v
 
 ---
 
-* For Install instructions refer to the install documentation in this repository.
+* For Install instructions refer to the install (INSTALL.md) document in this repository.
 
 [Appliance Install and Deployment](https://github.com/1computerguy/scanner-autobuild/blob/main/INSTALL.md)
 
