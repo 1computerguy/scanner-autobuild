@@ -7,39 +7,70 @@ __NOTE__: I have only validated running Packer from Windows using VMware Worksta
 
 ## Install procedures to build the appliance in a Windows environment using VMware Workstation
 
-### Install Chocolatey (this was used to install Packer)
- - Open a PowerShell terminal as an administrator
- - Run the following command to download an install Chocolatey
-   ```
-   Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-   ```
- - Next, run `choco install packer`
+### Install Packer
 
----
+[Packer Install Instructions](https://learn.hashicorp.com/tutorials/packer/getting-started-install)
 
-### Download scanner-autobuild repository
- - Download this repository from github:
-   - Git command line: `git clone https://github.com/1computerguy/scanner-autobuild`
-   - From github.com website:
-     1) Select `Code` button in top right of the repository
-     2) Select `Download Zip`
-     3) Unzip the file to a folder on your computer
+### Download this repository
+
+Download this repository from github:
+
+ * Git command line: `git clone https://github.com/1computerguy/scanner-autobuild`
+ * From github.com website:
+   1) Select `Code` button in top right of the repository
+   2) Select `Download Zip`
+   3) Unzip the file to a folder on your computer
 
 ---
 
 ### Modify Packer build variables
-There is a variables section at the top of the packer-scan-autobuild.json file to configure for your environment. Below are the different variables you can configure and why you care.
+There is a variables section at the top of the `packer-scan-autobuild.json` file to configure for your environment.
+
+#### Variables common for Workstation and ESXi build:
+
+  * vmname - The name you want for the Virtual Appliance
+  * iso_file - Location of your local Photon ISO
+    - __NOTE__: If you download the ISO manually make sure you have the [Full ISO x86_64](https://packages.vmware.com/photon/3.0/Rev3/iso/photon-3.0-a383732.iso)
+  * iso_url - Download link for Photon ISO (Packer automatically downloads this if you do not have a local copy)
+  * photon_username - set this to root
+  * photon_password - root password to use for initial Packer build
+  * numvcpus - number of CPUs required for VM
+  * ramsize - amount of RAM for VM
+  * disksize - size of the VM disk
+  * eth_type - Set network interface type (Packer defaults to e1000, so we manually set it to vmxnet3 here)
+  * script_dir - location of build scripts (this shouldn't change)
+  * env_dir - location of additional files required for packer build (this shouldn't change)
+  * output_path - path to output the VM (used for the OVA export script)
+  * photon_ovf_template - location of the ovf template file (this shouldn't change)
+  * photon_version - This is used in the ovf template to indicate the version of Photon used during build
+
+#### Variables specific to VMware ESXi build:
+
+  * esx_host - IP of esx host where you want to build VM
+  * vcenter_username - username for vCenter server (web ui)
+  * vcenter_password - password for vCenter server (web ui)
+  * vcenter_datastore - Datastore to store the VM during build
+  * vcenter - vCenter hostname
+  * vcenter_datacenter - Datacenter to use to build the VM
+  * vcenter_cluster - Cluster to use to build the VM
+  * vcenter_vmfolder - VM folder to store the VM in during build
+  * vcenter_portgroup - Portgroup for network connections (requires Internet for initial build)
 
 ---
 
 ### Build appliance with Packer
- - Make sure ovftool is installed and added to your PATH environment variable (if you have VMware Workstation installed, you have ovftool)
-   1) Open a command prompt and type: `setx path "%PATH%;C:\Program Files (x86)\VMware\VMware Workstation\OVFTool"`
-   2) Close and reopen the command prompt
-   3) Navigate to the `scanner-autobuild` (location of the downloaded repository) directory
-   4) Run the Packer command to build the appliance:
-     - Build on VMware Workstation: `packer build -only=vmware-workstation packer-scan-autobuild.json`
-     - Build on VMware ESXi: `packer build -only=vmware-esxi packer-scan-autobuild.json`
-   5) Packer will run through some validation stages
-     - NOTE: If you do not have a local copy of the Photon ISO, Packer will download it for you
+__NOTE__: Make sure ovftool is installed and added to your PATH environment variable. If you have VMware Workstation installed, you have ovftool. If you do not have Workstation, you can download and install ovftool from [here](https://code.vmware.com/web/tool/4.4.0/ovf).
 
+  * Add ovftool to your PATH environment variable
+    - Follow these instructions for [Windows using setx command](https://www.windows-commandline.com/set-path-command-line/)
+    - Follow these instructions for [Windows GUI](https://docs.alfresco.com/4.2/tasks/fot-addpath.html)
+    - Follow these instructions for [Linux](https://www.baeldung.com/linux/path-variable)
+
+  * Navigate to the `scanner-autobuild` (location of the downloaded repository) directory
+  * Run the Packer command to build the appliance:
+    - Build on VMware Workstation: `packer build -only=vmware-workstation packer-scan-autobuild.json`
+    - Build on VMware ESXi: `packer build -only=vmware-esxi packer-scan-autobuild.json`
+  * Packer will run through some validation stages, and troubleshooting is pretty self explanitory if you read the errors (it is usually problems with your PATH or some variable setting)
+  * :fingers-crossed: - The appliance builds properly and you have a packaged ova ready to deploy in your environment
+  
+  
