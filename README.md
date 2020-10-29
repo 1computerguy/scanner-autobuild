@@ -16,7 +16,7 @@ This is a Packer auto-built appliance using Photon and Docker to run the draft v
 
 * For Install instructions refer to the install documentation in this repository.
 
-[Appliance Install and Deployment](https://github.com/1computerugy/scanner-autobuild/blob/main/INSTALL.md)
+[Appliance Install and Deployment](https://github.com/1computerguy/scanner-autobuild/blob/main/INSTALL.md)
 
 
 ### Scan Script usage
@@ -25,4 +25,4 @@ This is a Packer auto-built appliance using Photon and Docker to run the draft v
 
 * For scanner usage instructions refer to the usage documenation in this repository (or use the `scan -h` command once you log into the appliance)
 
-[Scanner usage instructions](https://github.com/1computerugy/scanner-autobuild/blob/main/USAGE.md)
+[Scanner usage instructions]https://github.com/1computerguy/scanner-autobuild/blob/main/USAGE.md)
