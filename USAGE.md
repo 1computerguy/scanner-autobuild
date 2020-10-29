@@ -44,8 +44,8 @@ Output from `scan -h` command:
   | Usage of -n option:
   |   scan --vcenter --vc vcenter.some.domain -n '1.2.3.4' -n '2.3.4.5'
   |
-  |  --vcuser <username@some.domain> -  Set vCenter Username
-  |  --vcpass <vcenter password>     -  Set vCenter Password
+  |  --vcuser <username@some.domain>    -  Set vCenter Username
+  |  --vcpass <vcenter password>        -  Set vCenter Password
   |  --sshuser <ssh username>           -  Set vCenter Photon appliance SSH Username
   |  --sshpass <ssh password>           -  Set vCenter Photon appliance SSH Password
   |
