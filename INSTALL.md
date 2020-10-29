@@ -71,6 +71,10 @@ __NOTE__: Make sure ovftool is installed and added to your PATH environment vari
     - Build on VMware Workstation: `packer build -only=vmware-workstation packer-scan-autobuild.json`
     - Build on VMware ESXi: `packer build -only=vmware-esxi packer-scan-autobuild.json`
   * Packer will run through some validation stages, and troubleshooting is pretty self explanitory if you read the errors (it is usually problems with your PATH or some variable setting)
-  * :fingers-crossed: - The appliance builds properly and you have a packaged ova ready to deploy in your environment
+  * :crossed_fingers: - The appliance builds properly and you have a packaged ova ready to deploy in your environment
+ 
+ ---
+ 
+ ### Issues or concerns:
   
-  
+ If you have any problems, issues, or concerns with this build process, feel free to raise an issue or contribute by issuing a pull request. I'll address any issues as they arise.
