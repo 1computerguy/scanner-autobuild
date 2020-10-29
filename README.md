@@ -11,7 +11,7 @@ For more information about the existing vSphere STIG and Security Requirements G
 
 ## Appliance Deployment
 
-For Install instructions refer to the install (INSTALL.md) document in this repository.
+For Install instructions refer to the install document (INSTALL.md) in this repository.
 
 * [Appliance Install and Deployment](https://github.com/1computerguy/scanner-autobuild/blob/main/INSTALL.md)
 
