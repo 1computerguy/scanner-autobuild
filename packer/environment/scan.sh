@@ -1,8 +1,26 @@
-#!/bin/bash 
+#!/bin/bash
 
 set -ep
 
-[[ -z "$@" ]] && echo "You must provide an argument. Use --help or -h to get additional information."
+if [[ -z "$@" ]]
+then
+    echo "You must provide an argument. Use --help or -h to get additional information."
+    echo ""
+    exit 1
+fi
+
+case $1
+in
+    -e | --environment )
+    ;;
+    *)
+        echo "If you wish to use the -e or --environment option, it must be the first argument..."
+        echo "Any additional arguments provided after -e or --environment will be overwritten by"
+        echo "options provided at the command line."
+        echo ""
+        exit 1
+        ;;
+esac
 
 # Set Date
 RUN_DATE=$(date +"%m%d%Y")
@@ -67,11 +85,10 @@ function help () {
   |  Scan single host with stored creds
   |   scan --host esxi1.domain --creds --vc vcenter.some.domain
   |
-  |  Scan all systems and prompt for creds (simplest but longest)
+  |  Scan all systems and prompt for creds
   |   scan --all --creds prompt --vc vcenter.some.domain
   |
   |___________________________________________________________________________________________
-
 EOF
     exit 0
 }
@@ -115,9 +132,13 @@ function get_creds () {
             echo ""
             get_creds "prompt"
         fi
+    elif [[ $GET_CREDS == "plain" ]]
+    then
+            return
     else
-        echo "You have to enter either 'prompt' or '/file/location' when using the"
-        echo "--creds option. For more information use --help or -h."
+            echo "This option only accepts the value 'prompt' if used from the command line..."
+            echo ""
+            exit 1
     fi
 }
 
@@ -238,31 +259,29 @@ done
 # vCenter Settings - if these variables are not set, we will set them to empty strings
 # except for the PHOTON_IP which can be set using a DNS lookup if it is forgotten when
 # scanning vCenter
-[[ -z $SYSLOG ]] && SYSLOG=''
-[[ -z $NTP1 ]] && NTP1=''
-[[ -z $NTP2 ]] && NTP2=''
+: ${SYSLOG=''}
+: ${NTP1=''}
+: ${NTP2=''}
 ([[ -z $PHOTON_IP ]] && [[ ! -z $VCENTER ]]) && PHOTON_IP=$(dig +short $VCENTER)
 
 # User Account Credentials variables - all set to empty will be populated later in script
-USER_WQ=''
-PASS_WQ=''
-[[ -z $USER ]] && USER=''
-[[ -z $PASS ]] && PASS=''
-[[ -z $SSH_USER ]] && SSH_USER=''
-[[ -z $SSH_PASS ]] && SSH_PASS=''
-[[ -z $UPLOAD_USER ]] && UPLOAD_USER=''
-[[ -z $UPLOAD_API_KEY ]] && UPLOAD_API_KEY=''
+USER_WQ=$(echo \'$USER\')
+PASS_WQ=$(echo \'$PASS\')
+: ${USER=''}
+: ${PASS=''}
+: ${SSH_USER=''}
+: ${SSH_PASS=''}
+: ${UPLOAD_USER=''}
+: ${UPLOAD_API_KEY=''}
 
 # Directories and files
-[[ -z $BASE_DIR ]] && BASE_DIR="$(pwd)"
-OUTPUT_DIR="$BASE_DIR/scans/$RUN_DATE"
+: ${BASE_DIR="$(pwd)"}
+: ${OUTPUT_DIR="$BASE_DIR/scans/$RUN_DATE"}
 COOKIE="$BASE_DIR/cookie-jar.txt"
 LOG_BASE="$BASE_DIR/logs"
 
 [[ ! -d $OUTPUT_DIR ]] && mkdir -p $OUTPUT_DIR
-
-USER_WQ=$(echo \'$USER\')
-PASS_WQ=$(echo \'$PASS\')
+[[ ! -d $LOG_BASE ]] && mkdir -p $LOG_BASE
 
 # Use vCenter API to get list of VMs and Hosts to scan
 if ([[ $VMSCAN == "all" ]] || [[ $HSCAN == "all" ]]) || ([[ $VMSCAN == "all" ]] && [[ $HSCAN == "all" ]])
