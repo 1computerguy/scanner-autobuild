@@ -5,7 +5,7 @@ These procedures should step you through the process of installing packer and bu
 
 __NOTE__: I have only validated running Packer from Windows using VMware Workstation so far. As additional procedures are fully vetted they will be documented here.
 
-## Install procedures to build the appliance and in a Windows environment using VMware Workstation
+## Install procedures to build the appliance in a Windows environment using VMware Workstation
 
 ### Install Chocolatey (this was used to install Packer)
  - Open a PowerShell terminal as an administrator
