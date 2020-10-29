@@ -1,44 +1,28 @@
+
 # VMware DoD/Security Scanner Appliance Auto-build
-This is a Packer auto-built appliance using Photon and Docker to run the draft v6.7 DoD STIG scripts located at https://github.com/vmware/dod-compliance-and-automation in a VMware vSphere environment.
 
-## Build instructions
- - NOTE: This is how I built and tested it so far, as additional means are validated, they will be written up here.
+## Overview
 
----
+This is a Packer auto-built appliance using Photon and Docker to run the draft v6.7 DoD Security Technical Implementaiton Guide (STIG) in a VMware vSphere environment. The intent behind this appliance is to create a lightweight, portable VM for security scanning of VMware infrastracture in DoD environments in compliance with Risk Management Framework (RMF) guildlines as defined in DoDI 8510.01. This appliance will currently only scan an environment against the existing VMware v6.7 STIG, but if you require compatability with previous versions of vSphere, create an issue and I'll see what I can do (or if you would like to contribute, feel free to issue a pull request).
 
-### Install Chocolatey (this was used to install Packer)
- - Open a PowerShell terminal as an administrator
- - Run the following command to download an install Chocolatey
-   ```
-   Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-   ```
- - Next, run `choco install packer`
+* For more information about the existing vSphere STIG and Security Requirements Guide (SRG), please visit the DoD Compliance and Automation Github repository below.
+
+[VMware DoD Compliance and Automation - vSphere v6.7 STIG (Draft)](https://github.com/vmware/dod-compliance-and-automation)
+
+
+### Appliance Deployment
 
 ---
 
-### Download scanner-autobuild repository
- - Download this repository from github:
-   - Git command line: `git clone https://github.com/1computerguy/scanner-autobuild`
-   - From github.com website:
-     1) Select `Code` button in top right of the repository
-     2) Select `Download Zip`
-     3) Unzip the file to a folder on your computer
+* For Install instructions refer to the install documentation in this repository.
+
+[Appliance Install and Deployment](https://github.com/1computerugy/scanner-autobuild/blob/main/INSTALL.md)
+
+
+### Scan Script usage
 
 ---
 
-### Modify Packer build variables
-There is a variables section at the top of the packer-scan-autobuild.json file to configure for your environment. Below are the different variables you can configure and why you care.
+* For scanner usage instructions refer to the usage documenation in this repository (or use the `scan -h` command once you log into the appliance)
 
----
-
-### Build appliance with Packer
- - Make sure ovftool is installed and added to your PATH environment variable (if you have VMware Workstation installed, you have ovftool)
-   1) Open a command prompt and type: `setx path "%PATH%;C:\Program Files (x86)\VMware\VMware Workstation\OVFTool"`
-   2) Close and reopen the command prompt
-   3) Navigate to the `scanner-autobuild` (location of the downloaded repository) directory
-   4) Run the Packer command to build the appliance:
-     - Build on VMware Workstation: `packer build -only=vmware-workstation packer-scan-autobuild.json`
-     - Build on VMware ESXi: `packer build -only=vmware-esxi packer-scan-autobuild.json`
-   5) Packer will run through some validation stages
-     - NOTE: If you do not have a local copy of the Photon ISO, Packer will download it for you
-
+[Scanner usage instructions](https://github.com/1computerugy/scanner-autobuild/blob/main/USAGE.md)
