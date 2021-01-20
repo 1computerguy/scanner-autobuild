@@ -13,6 +13,7 @@ docker-compose run --rm web rake db:create db:migrate
 popd
 
 echo '> Building and configuring dod scanner...'
+mv ./dod-compliance-and-automation ./scanner-autobuild/docker/inspec
 pushd ./scanner-autobuild/docker/inspec
 docker build . --tag inspec-pwsh
 popd
