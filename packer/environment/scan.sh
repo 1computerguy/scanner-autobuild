@@ -297,13 +297,13 @@ else
 fi
 
 # Host scans
-[[ $HSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans --env VISERVER="$VCENTER" --env VISERVER_USERNAME=$USER_WQ --env VISERVER_PASSWORD=$PASS_WQ --env TO_SCAN="$HOSTS" inspec-pwsh hosts $FORCE
+[[ $HSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans -v $LOG_BASE:/logs --env VISERVER="$VCENTER" --env VISERVER_USERNAME=$USER_WQ --env VISERVER_PASSWORD=$PASS_WQ --env TO_SCAN="$HOSTS" inspec-pwsh hosts $FORCE
 
 # VM scans
-[[ $VMSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans --env VISERVER="$VCENTER" --env VISERVER_USERNAME=$USER_WQ --env VISERVER_PASSWORD=$PASS_WQ --env TO_SCAN="$VMS" inspec-pwsh vms $FORCE
+[[ $VMSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans -v $LOG_BASE:/logs --env VISERVER="$VCENTER" --env VISERVER_USERNAME=$USER_WQ --env VISERVER_PASSWORD=$PASS_WQ --env TO_SCAN="$VMS" inspec-pwsh vms $FORCE
 
 # vCenter scans
-[[ $VCSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans --env VISERVER="$VCENTER" --env SSH_USER=$SSH_USER --env SSH_PASS=$SSH_PASS --env SYSLOG=$SYSLOG --env PHOTON=$PHOTON_IP --env NTP1=$NTP1 --env NTP2=$NTP2 inspec-pwsh vcenter $FORCE
+[[ $VCSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans -v $LOG_BASE:/logs --env VISERVER="$VCENTER" --env SSH_USER=$SSH_USER --env SSH_PASS=$SSH_PASS --env SYSLOG=$SYSLOG --env PHOTON=$PHOTON_IP --env NTP1=$NTP1 --env NTP2=$NTP2 inspec-pwsh vcenter $FORCE
 
 # If upload option is selected, then upload scans to Heimdal server
 if [[ $UPLOAD ]]
