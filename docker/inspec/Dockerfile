@@ -47,6 +47,9 @@ RUN file=$(find / -name "VMware.PowerCLI.psd1" 2>/dev/null) && \
 RUN mkdir /inspec
 COPY ./inspec-license /etc/chef/accepted_licenses/inspec
 COPY ./scripts/inspec-scan.sh /usr/local/bin/scan
+COPY ./dod-compliance-and-automation/vsphere/6.7/vsphere/inspec/vmware-esxi-6.7-stig-baseline /inspec/vmware-esxi-6.7-stig-baseline
+COPY ./dod-compliance-and-automation/vsphere/6.7/vsphere/inspec/vmware-vm-6.7-stig-baseline /inspec/vmware-vm-6.7-stig-baseline
+COPY ./dod-compliance-and-automation/vsphere/6.7/vcsa/inspec/vmware-vcsa-6.7-stig-baseline /inspec/vmware-vcsa-6.7-stig-baseline
 
 # Set entrypoint permissions and accept license for InSpec
 RUN chmod +x /usr/local/bin/scan.sh && \
