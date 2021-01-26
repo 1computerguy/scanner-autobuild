@@ -1,9 +1,9 @@
 #!/bin/bash
 
-echo '> Pulling required git repos...'
+echo '> Pulling scanner-autobuild git repo and submodules...'
 # download dod-compliance-and-automation git repository to build containers
 git clone https://github.com/mitre/heimdall.git
-git clone https://github.com/vmware/dod-compliance-and-automation.git
+git clone https://github.com/1computerguy/dod-compliance-and-automation.git
 
 echo '> Building and configuring heimdall visualization...'
 pushd heimdall
@@ -13,7 +13,14 @@ docker-compose run --rm web rake db:create db:migrate
 popd
 
 echo '> Building and configuring dod scanner...'
-docker-compose build --force-rm
+mv ./dod-compliance-and-automation ./scanner-autobuild/docker/inspec
+pushd ./scanner-autobuild/docker/inspec
+docker build . --tag inspec-pwsh
+popd
+
+pushd ./scanner-autobuild/docker/ansible
+docker build . --tag ansible
+popd
 
 echo '> Making scan and remediate scripts executable...'
 # Setup scan and remediate automation scripts

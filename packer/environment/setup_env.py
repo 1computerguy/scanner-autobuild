@@ -29,8 +29,8 @@ def main():
                         help="Use this argument to be prompted for all required environment settings",
                         required=False)
     parser.add_argument("-e", "--env", action="store", dest="env",
-                        help="Location of environment.py file - default vaule is the current directory.",
-                        default="environment.py", required=True)
+                        help="Location of .env file - default vaule is the current directory.",
+                        default=".env", required=True)
     parser.add_help()
 
 if __name__ == "__main__":
