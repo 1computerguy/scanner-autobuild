@@ -1,9 +1,9 @@
 #!/bin/bash
 
-echo '> Pulling scanner-autobuild git repo and submodules...'
+echo '> Pulling required git repos...'
 # download dod-compliance-and-automation git repository to build containers
 git clone https://github.com/mitre/heimdall.git
-git clone https://github.com/1computerguy/dod-compliance-and-automation.git
+git clone https://github.com/vmware/dod-compliance-and-automation.git
 
 echo '> Building and configuring heimdall visualization...'
 pushd heimdall
