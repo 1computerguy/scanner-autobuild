@@ -56,7 +56,13 @@ then
                                 SCAN_VAL_SHORT="$SCAN_VAL_SHORT"_$NEXT_FILE_TIME
                         fi
                         cd $INSPEC_DIR
-                        inspec exec $INSPEC_DIR -t vmware:// --input $SCAN_SYSTEM=$SCAN_VAL --show-progress --reporter=cli json:/scans/$SCAN_VAL_SHORT.json 2>> /logs/$RUNVAL-$LOG_TIME-error.log
+                        if [ "$RUNVAL" = "hosts" ]
+                        then
+                                inspec exec $INSPEC_DIR -t vmware:// --input $SCAN_SYSTEM=$SCAN_VAL syslogServer=$SYSLOG ntpServer1=$NTP1 ntpServer2=$NTP2 --show-progress --reporter=cli json:/scans/$SCAN_VAL_SHORT.json 2>> /logs/$RUNVAL-$LOG_TIME-error.log
+                        elif [ "$RUNVAL" = "vms" ]
+                        then
+                                inspec exec $INSPEC_DIR -t vmware:// --input $SCAN_SYSTEM=$SCAN_VAL --show-progress --reporter=cli json:/scans/$SCAN_VAL_SHORT.json 2>> /logs/$RUNVAL-$LOG_TIME-error.log
+                        fi
                 fi
         done
 else
