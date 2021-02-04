@@ -83,7 +83,7 @@ else
                         SCAN_VAL_SHORT="$SCAN_VAL_SHORT"_$NEXT_FILE_TIME
                 fi
                 cd $INSPEC_DIR
-                inspec exec $INSPEC_DIR/wrapper -t ssh://$SSH_USER@$VISERVER --password $SSH_PASS --input syslogServer=$(echo $SYSLOG | sed -E 's|[a-z]{3}://||g') photonIp=$PHOTON ntpServer1=$NTP1 ntpServer2=$NTP2 --show-progress --reporter=cli json:/scans/$SCAN_VAL_SHORT.json 2>> /logs/$RUNVAL-$LOG_TIME-error.log
+                inspec exec $INSPEC_DIR/wrapper -t ssh://$SSH_USER@$VISERVER --password $SSH_PASS --input syslogServer=$(echo $SYSLOG | sed -E 's|[a-z]{3}://||g') ntpServer1=$NTP1 ntpServer2=$NTP2 --show-progress --reporter=cli json:/scans/$SCAN_VAL_SHORT.json 2>> /logs/$RUNVAL-$LOG_TIME-error.log
         fi
 fi
 
