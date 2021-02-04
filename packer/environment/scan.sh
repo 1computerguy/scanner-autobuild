@@ -175,10 +175,6 @@ do
             VCENTER="$1"
             VC_BASE=$(echo $VCENTER | cut -d'.' -f1)
             ;;
-        --pip )
-            shift
-            PHOTON_IP="$1"
-            ;;
         --all | -a )
             VMSCAN="all"
             HSCAN="all"
@@ -267,7 +263,6 @@ done
 : ${NTP1=''}
 : ${NTP2=''}
 : ${BUILD=''}
-([[ -z $PHOTON_IP ]] && [[ ! -z $VCENTER ]]) && PHOTON_IP=$(dig +short $VCENTER)
 
 # User Account Credentials variables - all set to empty will be populated later in script
 USER_WQ=$(echo \'$USER\')
@@ -309,7 +304,7 @@ fi
 [[ $VMSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans -v $LOG_BASE:/logs --env VISERVER="$VCENTER" --env VISERVER_USERNAME=$USER_WQ --env VISERVER_PASSWORD=$PASS_WQ --env TO_SCAN="$VMS" inspec-pwsh vms $FORCE
 
 # vCenter scans
-[[ $VCSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans -v $LOG_BASE:/logs --env VISERVER="$VCENTER" --env SSH_USER=$SSH_USER --env SSH_PASS=$SSH_PASS --env SYSLOG=$SYSLOG --env PHOTON=$PHOTON_IP --env NTP1=$NTP1 --env NTP2=$NTP2 inspec-pwsh vcenter $FORCE
+[[ $VCSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans -v $LOG_BASE:/logs --env VISERVER="$VCENTER" --env SSH_USER=$SSH_USER --env SSH_PASS=$SSH_PASS --env SYSLOG=$SYSLOG --env NTP1=$NTP1 --env NTP2=$NTP2 inspec-pwsh vcenter $FORCE
 
 # If upload option is selected, then upload scans to Heimdal server
 if [[ $UPLOAD ]]
