@@ -164,6 +164,16 @@
     },
     {
       "type": "file",
+      "source": "{{ user `env_dir` }}/export.sh",
+      "destination": "/usr/local/bin/export"
+    },
+    {
+      "type": "file",
+      "source": "{{ user `env_dir` }}/scan.sh",
+      "destination": "/usr/local/bin/scan"
+    },
+    {
+      "type": "file",
       "source": "{{ user `env_dir` }}/.creds",
       "destination": "/home/scanadmin/.creds"
     },
@@ -171,6 +181,11 @@
       "type": "file",
       "source": "{{ user `env_dir` }}/.env",
       "destination": "/home/scanadmin/.env"
+    },
+    {
+      "type": "file",
+      "source": "{{ user `env_dir` }}/.env-export",
+      "destination": "/home/scanadmin/.env-export"
     },
     {
       "type": "file",

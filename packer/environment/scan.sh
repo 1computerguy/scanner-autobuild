@@ -76,7 +76,7 @@ function help () {
   |  --help | -h                        -  Print this menu
   |
   | Example:
-  |  Scan using .env file (easiest method)
+  |  Scan using .env file (easiest method) - make sure to update the variables in .env
   |   scan -e .env
   |
   |  Scan all VMs and vCenter (vcenter has separate STIG)

@@ -10,7 +10,8 @@
     "packagelist_file": "packages_minimal.json",
     "additional_packages": [
         "git",
-        "sudo"
+        "sudo",
+        "jq"
     ],
     "postinstall": [
                     "#!/bin/sh",

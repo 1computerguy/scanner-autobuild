@@ -35,10 +35,12 @@ then
                 then
                         INSPEC_DIR="/inspec/vmware-esxi-6.7-stig-baseline"
                         SCAN_VAL_SHORT=$(echo $SCAN_VAL | cut -d'.' -f1 | cut -d'"' -f2)
+                        SCAN_SYSTEM="vmhostName"
                 elif [ "$RUNVAL" = "vms" ]
                 then
                         INSPEC_DIR="/inspec/vmware-vm-6.7-stig-baseline"
                         SCAN_VAL_SHORT=$(echo $SCAN_VAL | cut -d'"' -f2)
+                        SCAN_SYSTEM="vmName"
                 fi
                 echo ""
                 echo -e "Scanning $SCAN_VAL"
@@ -54,12 +56,18 @@ then
                                 SCAN_VAL_SHORT="$SCAN_VAL_SHORT"_$NEXT_FILE_TIME
                         fi
                         cd $INSPEC_DIR
-                        inspec exec $INSPEC_DIR -t vmware:// --input $SCAN_NAME=$(echo $SCAN_VAL | cut -d'"' -f2) --show-progress --reporter=cli json:/scans/$SCAN_VAL_SHORT.json 2>> /logs/$RUNVAL-$LOG_TIME-error.log
+                        if [ "$RUNVAL" = "hosts" ]
+                        then
+                                inspec exec $INSPEC_DIR -t vmware:// --input $SCAN_SYSTEM=$(echo $SCAN_VAL | cut -d'"' -f 2) syslogServer=$SYSLOG ntpServer1=$NTP1 ntpServer2=$NTP2 exceptionUsers=${EXCEPTION_USER} --show-progress --reporter=cli json:/scans/$SCAN_VAL_SHORT.json 2>> /logs/$RUNVAL-$LOG_TIME-error.log
+                        elif [ "$RUNVAL" = "vms" ]
+                        then
+                                inspec exec $INSPEC_DIR -t vmware:// --input $SCAN_SYSTEM=$(echo $SCAN_VAL | cut -d'"' -f 2) --show-progress --reporter=cli json:/scans/$SCAN_VAL_SHORT.json 2>> /logs/$RUNVAL-$LOG_TIME-error.log
+                        fi
                 fi
         done
 else
         INSPEC_DIR="/inspec/vmware-vcsa-6.7-stig-baseline"
-        SCAN_VAL=$VCENTER
+        SCAN_VAL=$VISERVER
         SCAN_VAL_SHORT=$(echo $SCAN_VAL | cut -d'.' -f1 | cut -d'"' -f2)
         echo ""
         echo "Scanning $SCAN_VAL_SHORT"
@@ -75,7 +83,7 @@ else
                         SCAN_VAL_SHORT="$SCAN_VAL_SHORT"_$NEXT_FILE_TIME
                 fi
                 cd $INSPEC_DIR
-                inspec exec $INSPEC_DIR/wrapper -t ssh://$SSH_USER@$VISERVER --password $SSH_PASS --input syslogServer=$SYSLOG photonIp=$PHOTON ntpServer1=$NTP1 ntpServer2=$NTP2 --show-progress --reporter=cli json:/scans/$SCAN_VAL_SHORT.json 2>> /logs/$RUNVAL-$LOG_TIME-error.log
+                inspec exec $INSPEC_DIR/wrapper -t ssh://$SSH_USER@$VISERVER --password $SSH_PASS --input syslogServer=$(echo $SYSLOG | sed -E 's|[a-z]{3}://||g') ntpServer1=$NTP1 ntpServer2=$NTP2 --show-progress --reporter=cli json:/scans/$SCAN_VAL_SHORT.json 2>> /logs/$RUNVAL-$LOG_TIME-error.log
         fi
 fi
 

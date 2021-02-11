@@ -26,8 +26,7 @@ tdnf --assumeyes remove \
                  python2 perl \
                  perl-DBI \
                  perl-YAML \
-                 perl-CGI \
-                 git 
+                 perl-CGI
 
 echo '> Clearing tdnf cache...'
 tdnf clean all
