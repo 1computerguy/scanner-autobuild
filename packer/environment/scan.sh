@@ -175,10 +175,6 @@ do
             VCENTER="$1"
             VC_BASE=$(echo $VCENTER | cut -d'.' -f1)
             ;;
-        --pip )
-            shift
-            PHOTON_IP="$1"
-            ;;
         --all | -a )
             VMSCAN="all"
             HSCAN="all"
@@ -249,6 +245,10 @@ do
             shift
             SSH_PASS="$1"
             ;;
+        --exception )
+            shift
+            EXCEPTION_USER="$1"
+            ;;
         --help | -h )
             help
             ;;
@@ -262,7 +262,7 @@ done
 : ${SYSLOG=''}
 : ${NTP1=''}
 : ${NTP2=''}
-([[ -z $PHOTON_IP ]] && [[ ! -z $VCENTER ]]) && PHOTON_IP=$(dig +short $VCENTER)
+: ${BUILD=''}
 
 # User Account Credentials variables - all set to empty will be populated later in script
 USER_WQ=$(echo \'$USER\')
@@ -271,6 +271,7 @@ PASS_WQ=$(echo \'$PASS\')
 : ${PASS=''}
 : ${SSH_USER=''}
 : ${SSH_PASS=''}
+: ${EXCEPTION_USER=''}
 : ${UPLOAD_USER=''}
 : ${UPLOAD_API_KEY=''}
 
@@ -297,19 +298,19 @@ else
 fi
 
 # Host scans
-[[ $HSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans -v $LOG_BASE:/logs --env VISERVER="$VCENTER" --env VISERVER_USERNAME=$USER_WQ --env VISERVER_PASSWORD=$PASS_WQ --env TO_SCAN="$HOSTS" inspec-pwsh hosts $FORCE
+[[ $HSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans -v $LOG_BASE:/logs --env VISERVER="$VCENTER" --env VISERVER_USERNAME=$USER_WQ --env VISERVER_PASSWORD=$PASS_WQ --env SYSLOG=$SYSLOG --env NTP1=$NTP1 --env NTP2=$NTP2 --env EXCEPTION_USER=$EXCEPTION_USER --env TO_SCAN="$HOSTS" inspec-pwsh hosts $FORCE
 
 # VM scans
 [[ $VMSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans -v $LOG_BASE:/logs --env VISERVER="$VCENTER" --env VISERVER_USERNAME=$USER_WQ --env VISERVER_PASSWORD=$PASS_WQ --env TO_SCAN="$VMS" inspec-pwsh vms $FORCE
 
 # vCenter scans
-[[ $VCSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans -v $LOG_BASE:/logs --env VISERVER="$VCENTER" --env SSH_USER=$SSH_USER --env SSH_PASS=$SSH_PASS --env SYSLOG=$SYSLOG --env PHOTON=$PHOTON_IP --env NTP1=$NTP1 --env NTP2=$NTP2 inspec-pwsh vcenter $FORCE
+[[ $VCSCAN ]] && docker run -it --rm -v "$OUTPUT_DIR":/scans -v $LOG_BASE:/logs --env VISERVER="$VCENTER" --env SSH_USER=$SSH_USER --env SSH_PASS=$SSH_PASS --env SYSLOG=$SYSLOG --env NTP1=$NTP1 --env NTP2=$NTP2 inspec-pwsh vcenter $FORCE
 
 # If upload option is selected, then upload scans to Heimdal server
 if [[ $UPLOAD ]]
 then
     for file in ${OUTPUT_DIR}/*
     do
-        curl -F "file=@${file}" -F email=$UPLOAD_USER -F api_key=$UPLOAD_API_KEY http://localhost:3000/evaluation_upload_api >>$LOG_BASE/.upload_success 2>>$LOG_BASE/.upload_error
+        curl -X POST -H "Content-Type: application/json" -H "Authorization: $UPLOAD_USER $UPLOAD_API_KEY" -d "@$file" http://localhost:3000/evaluations >>$LOG_BASE/.upload_success 2>>$LOG_BASE/.upload_error
     done
 fi
