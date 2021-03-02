@@ -11,7 +11,8 @@
     "additional_packages": [
         "git",
         "sudo",
-        "jq"
+        "jq",
+        "subversion"
     ],
     "postinstall": [
                     "#!/bin/sh",

@@ -12,12 +12,13 @@ docker-compose up -d
 popd
 
 echo '> Building and configuring dod scanner...'
-mv ./dod-compliance-and-automation ./scanner-autobuild/docker/inspec
-pushd ./scanner-autobuild/docker/inspec
+svn export https://github.com/1computerguy/scanner-autobuild.git/trunk/docker
+mv ./dod-compliance-and-automation ./docker/inspec
+pushd ./docker/inspec
 docker build . --tag inspec-pwsh
 popd
 
-pushd ./scanner-autobuild/docker/ansible
+pushd ./docker/ansible
 docker build . --tag ansible
 popd
 
@@ -25,8 +26,8 @@ docker pull mitre/inspec_tools
 
 echo '> Making scan and remediate scripts executable...'
 # Setup scan and remediate automation scripts
-chmod +x /usr/local/bin/{scan,remediate,exports}
+chmod +x /usr/local/bin/{scan,remediate,export}
 
-echo '> Removing initial build containers (no longer required)...'
+#echo '> Removing initial build containers (no longer required)...'
 # Remove build containers
-docker rmi {chef/inspec,alpine:3.11}
+#docker rmi {chef/inspec,alpine:3.11}

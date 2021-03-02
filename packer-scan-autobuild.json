@@ -50,9 +50,9 @@
         "{{ user `iso_url` }}"
       ],
       "shutdown_command": "shutdown -h now",
-      "photon_password": "{{ user `photon_password` }}",
+      "ssh_password": "{{ user `photon_password` }}",
       "ssh_timeout": "60m",
-      "photon_username": "{{ user `photon_username` }}",
+      "ssh_username": "{{ user `photon_username` }}",
       "version": 16,
       "vm_name": "{{ user `vmname` }}",
       "cpus": "{{ user `numvcpus` }}",
@@ -169,16 +169,6 @@
     },
     {
       "type": "file",
-      "source": "{{ user `env_dir` }}/scan.sh",
-      "destination": "/usr/local/bin/scan"
-    },
-    {
-      "type": "file",
-      "source": "{{ user `env_dir` }}/.creds",
-      "destination": "/home/scanadmin/.creds"
-    },
-    {
-      "type": "file",
       "source": "{{ user `env_dir` }}/.env",
       "destination": "/home/scanadmin/.env"
     },
@@ -186,16 +176,6 @@
       "type": "file",
       "source": "{{ user `env_dir` }}/.env-export",
       "destination": "/home/scanadmin/.env-export"
-    },
-    {
-      "type": "file",
-      "source": "{{ user `env_dir` }}/docker-compose.yml",
-      "destination": "/home/scanadmin/docker-compose.yml"
-    },
-    {
-      "type": "file",
-      "source": "{{ user `env_dir` }}/.bashrc",
-      "destination": "/home/scanadmin/.bashrc"
     },
     {
       "script": "{{ user `script_dir` }}/build-containers.sh",

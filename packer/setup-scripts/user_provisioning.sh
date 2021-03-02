@@ -30,3 +30,9 @@ echo '"PATH=/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"' >> /etc/environment
 echo '> Adding scanadmin user to docker group...'
 # Add Photon user to Docker group
 usermod -a -G docker scanadmin
+
+echo '> Setting scan and export permissions...'
+chmod 755 /usr/local/bin/{docker-compose,scan,export,remediate}
+
+echo '> Removing exited containers...'
+docker rm $(docker ps -aq)
