@@ -9,18 +9,21 @@ then
     exit 1
 fi
 
-case $1
-in
-    -e | --environment )
-        ;;
-    *)
-        echo "If you wish to use the -e or --environment option, it must be the first argument..."
-        echo "Any additional arguments provided after -e or --environment will be overwritten by"
-        echo "options provided at the command line."
-        echo ""
-        exit 1
-        ;;
-esac
+if [[ "$@" =~ '-e' ]] || [[ "$@" =~ '--environment' ]]
+then
+    case $1
+    in
+        -e | --environment )
+            ;;
+        *)
+            echo "If you wish to use the -e or --environment option, it must be the first argument..."
+            echo "Any additional arguments provided after -e or --environment will be overwritten by"
+            echo "options provided at the command line."
+            echo ""
+            exit 1
+            ;;
+    esac
+fi
 
 function help () {
     cat <<EOF
@@ -56,16 +59,13 @@ function help () {
   |
   | Example:
   |  Export using .env-export file (easiest method)
-  |   export -e .env-export
+  |   $(basename "$0") -e .env-export
   |
   |  Export single scan file
-  |   
+  |   $(basename "$0") --scan_file /full/path/to/scanfile.json --export_type ckl
   |
-  |  Scan single host with stored creds
-  |   scan --host esxi1.domain --creds --vc vcenter.some.domain
-  |
-  |  Scan all systems and prompt for creds
-  |   scan --all --creds prompt --vc vcenter.some.domain
+  |  Export all Scans in a directory
+  |   $(basename "$0") --scan_dir /full/path/to/scans 
   |
   |___________________________________________________________________________________________
 EOF

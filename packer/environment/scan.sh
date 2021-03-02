@@ -9,20 +9,23 @@ then
     exit 1
 fi
 
-case $1
-in
-    -e | --environment )
-    ;;
-    *)
-        echo "If you wish to use the -e or --environment option, it must be the first argument..."
-        echo "Any additional arguments provided after -e or --environment will be overwritten by"
-        echo "options provided at the command line."
-        echo ""
-        exit 1
-        ;;
-esac
+if [[ "$@" =~ '-e' ]] || [[ "$@" =~ '--environment' ]]
+then
+    case $1
+    in
+        -e | --environment )
+            ;;
+        * )
+            echo "If you wish to use the -e or --environment option, it must be the first argument..."
+            echo "Any additional arguments provided after -e or --environment will be overwritten by"
+            echo "options provided at the command line."
+            echo ""
+            exit 1
+            ;;
+    esac
+fi
 
-# Set Date
+# Set Run Date Variable
 RUN_DATE=$(date +"%m%d%Y")
 
 function help () {

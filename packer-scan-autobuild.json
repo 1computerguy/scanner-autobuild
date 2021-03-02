@@ -165,7 +165,7 @@
     {
       "type": "file",
       "source": "{{ user `env_dir` }}/export.sh",
-      "destination": "/usr/local/bin/export"
+      "destination": "/usr/local/bin/export-scan"
     },
     {
       "type": "file",
