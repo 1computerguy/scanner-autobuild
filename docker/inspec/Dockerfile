@@ -12,27 +12,16 @@ LABEL maintainer="Bryan Scarbrough <bscarbrough@vmware.com>" \
     org.label-schema.docker.cmd="docker run --rm -it inspec-pwsh"
 
 # Install Pre-Requisits
-RUN apk --update add --no-cache ca-certificates \
-        less \
-        ncurses-terminfo-base \
-        krb5-libs \
-        libgcc \
-        libintl \
-        libssl1.1 \
-        libstdc++ \
-        tzdata \
-        userspace-rcu \
-        zlib \
-        icu-libs \
-        curl && \
-    apk -X https://dl-cdn.alpinelinux.org/alpine/edge/main add --no-cache lttng-ust
+RUN apt-get update && \
+    apt-get install -y wget apt-transport-https software-properties-common && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Download and install PowerShell
-RUN curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.0.3/powershell-7.0.3-linux-alpine-x64.tar.gz -o /tmp/powershell.tar.gz && \
-    mkdir -p /opt/microsoft/powershell/7 && \
-    tar zxf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/7 && \
-    chmod +x /opt/microsoft/powershell/7/pwsh && \
-    ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh
+RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
+    dpkg -i packages-microsoft-prod.deb && \
+    add-apt-repository universe && \
+    apt-get install -y powershell && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install VMware.PowerCLI module disable incompatible submodules, accept licenses, and ignore certificates
 RUN pwsh -Command "& {Set-PSRepository -Name PSGallery -InstallationPolicy Trusted}" && \
@@ -60,3 +49,4 @@ WORKDIR /inspec
 
 ENTRYPOINT ["scan"]
 CMD ["-h"]
+
