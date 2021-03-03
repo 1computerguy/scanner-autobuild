@@ -18,6 +18,16 @@ For Install instructions refer to the install document (INSTALL.md) in this repo
 
 ## Scan Script usage
 
-For scanner usage instructions refer to the usage documenation in this repository (or use the `scan -h` command once you log into the appliance)
+For scanner usage instructions refer to the usage documentation in this repository (or use the `scan -h` command once you log into the appliance)
 
-* [Scanner usage instructions](https://github.com/1computerguy/scanner-autobuild/blob/main/USAGE.md)
+* [Scan usage instructions](https://github.com/1computerguy/scanner-autobuild/blob/main/USAGE.md)
+
+## Export Script usage
+
+For export usage instructions refer to the usage documentation in this repository (or use the `export-scan -h` command once you log into the appliance)
+
+* [Export usage instructions](https://github.com/1computerguy/scanner-autobuild/blob/main/USAGE.md)
+
+## Remediate Script usage
+
+Remediate script not yet written. If you'd like to help out, feel free to issue a PR!
