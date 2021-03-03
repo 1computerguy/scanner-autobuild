@@ -11,9 +11,8 @@ LABEL maintainer="Bryan Scarbrough <bscarbrough@vmware.com>" \
     org.label-schema.url="https://github.com/1computerguy/dod-compliance-and-automation" \
     org.label-schema.vcs-url="https://github.com/1computerguy/dod-compliance-and-automation" \
     org.label-schema.vendor="VMware" \
-    org.label-schema.docker.cmd="docker run --rm -it docker-ansible ansible-playbook -i 'IP or FQDN', -u 'username' /ansible/vcsa/vcsa-stig.yaml -k -v"
+    org.label-schema.docker.cmd="docker run --rm -it docker-ansible -i 'IP or FQDN', -u 'username' /ansible/vcsa/vcsa-stig.yaml -k -v"
 
-# Install required base packages
 RUN apk --no-cache add \
         sudo \
         python3\
@@ -24,30 +23,29 @@ RUN apk --no-cache add \
         openssh-client \
         rsync \
         git && \
-        apk --no-cache add --virtual build-dependencies \
+    apk --no-cache add --virtual build-dependencies \
         python3-dev \
         libffi-dev \
         openssl-dev \
-        build-base
+        build-base && \
+    pip3 install --upgrade pip cffi wheel && \
+    pip3 install ansible==2.10.3 && \
+    pip3 install mitogen ansible-lint jmespath && \
+    pip3 install --upgrade pywinrm && \
+    apk del build-dependencies && \
+    rm -rf /var/cache/apk/*
 
-# Install Python packages
-COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install -r /tmp/requirements.txt
-
-# Remove unnecessary packages
-RUN apk del build-dependencies python3-dev
-
-# Make /ansible and /etc/ansible directories and create hosts file
 RUN mkdir /ansible && \
     mkdir -p /etc/ansible && \
     echo 'localhost' > /etc/ansible/hosts
 
 # Copy VCSA, HOSTS, and VMs hardening profiles into container
-COPY vsphere/6.7/vcsa/ansible/* /ansible/vcsa
-COPY vsphere/6.7/vsphere/ansible/vmware-esxi-6.7-stig-ansible-hardening /ansible/host
-COPY vsphere/6.7/vsphere/ansible/vmware-vm-6.7-stig-ansible-hardening /ansible/vm
+COPY ./dod-compliance-and-automation/vsphere/6.7/vcsa/ansible/* /ansible/vcsa
+COPY ./dod-compliance-and-automation/vsphere/6.7/vsphere/ansible/vmware-esxi-6.7-stig-ansible-hardening /ansible/host
+COPY ./dod-compliance-and-automation/vsphere/6.7/vsphere/ansible/vmware-vm-6.7-stig-ansible-hardening /ansible/vm
 
 # Set working directory
 WORKDIR /ansible
 
-CMD [ "ansible" ]
+ENTRYPOINT [ "ansible-playbook" ]
+CMD [ "-h" ]
