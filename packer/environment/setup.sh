@@ -68,7 +68,4 @@ __CUSTOMIZE_PHOTON__
     chmod 755 /usr/local/bin/{docker-compose,scan,export-scan,remediate}
     chown scanadmin:scanadmin /home/scanadmin/{.env,.env-export}
 
-    echo '\e[92mRemoving exited containers...\e[0m'
-    docker ps -a
-    docker rm $(docker ps -aq)
 fi
