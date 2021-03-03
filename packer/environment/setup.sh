@@ -65,7 +65,7 @@ __CUSTOMIZE_PHOTON__
     touch /root/.ran_customization
     
     echo '\e[92mCSetting scan and export permissions...\e[0m'
-    chmod 755 /usr/local/bin/{docker-compose,scan,export,remediate}
+    chmod 755 /usr/local/bin/{docker-compose,scan,export-scan,remediate}
 
     echo '\e[92mRemoving exited containers...\e[0m'
     docker rm $(docker ps -aq)

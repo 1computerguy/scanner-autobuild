@@ -24,10 +24,3 @@ popd
 
 docker pull mitre/inspec_tools
 
-echo '> Making scan and remediate scripts executable...'
-# Setup scan and remediate automation scripts
-chmod +x /usr/local/bin/{scan,remediate,export}
-
-#echo '> Removing initial build containers (no longer required)...'
-# Remove build containers
-#docker rmi {chef/inspec,alpine:3.11}
