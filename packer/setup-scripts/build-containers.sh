@@ -19,9 +19,11 @@ docker build . --tag inspec-pwsh
 mv ./dod-compliance-and-automation ../ansible
 popd
 
+echo '> Building ansible remediation container...'
 pushd ./docker/ansible
 docker build . --tag ansible
 popd
 
+echo '> cleaning up and pulling inspec_tools container...'
+rm -rf ./docker
 docker pull mitre/inspec_tools
-
