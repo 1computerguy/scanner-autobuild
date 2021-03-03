@@ -69,7 +69,7 @@ function help () {
   |                                        value is NTP2
   |
   | Usage of -n option:
-  |   scan --vcenter --vc vcenter.some.domain -n '1.2.3.4' -n '2.3.4.5'
+  |   $(basename "$0") --vcenter --vc vcenter.some.domain -n '1.2.3.4' -n '2.3.4.5'
   |
   |  --vcuser <username@some.domain> -  Set vCenter Username
   |  --vcpass <vcenter password>     -  Set vCenter Password
@@ -80,16 +80,16 @@ function help () {
   |
   | Example:
   |  Scan using .env file (easiest method) - make sure to update the variables in .env
-  |   scan -e .env
+  |   $(basename "$0") -e .env
   |
   |  Scan all VMs and vCenter (vcenter has separate STIG)
-  |   scan --vm all --vcenter --force --vc vcenter.some.domain
+  |   $(basename "$0") --vm all --vcenter --force --vc vcenter.some.domain
   |
   |  Scan single host with stored creds
-  |   scan --host esxi1.domain --creds --vc vcenter.some.domain
+  |   $(basename "$0") --host esxi1.domain --creds --vc vcenter.some.domain
   |
   |  Scan all systems and prompt for creds
-  |   scan --all --creds prompt --vc vcenter.some.domain
+  |   $(basename "$0") --all --creds prompt --vc vcenter.some.domain
   |
   |___________________________________________________________________________________________
 EOF
