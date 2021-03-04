@@ -16,7 +16,7 @@ svn export https://github.com/1computerguy/scanner-autobuild.git/trunk/docker
 mv ./dod-compliance-and-automation ./docker/inspec
 pushd ./docker/inspec
 docker build . --tag inspec-pwsh
-mv ./dod-compliance-and-automation ../ansible
+cp ./dod-compliance-and-automation ../ansible
 popd
 
 echo '> Building ansible remediation container...'
@@ -25,5 +25,5 @@ docker build . --tag ansible
 popd
 
 echo '> cleaning up and pulling inspec_tools container...'
-rm -rf ./docker
+#rm -rf ./docker
 docker pull mitre/inspec_tools
