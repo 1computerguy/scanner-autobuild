@@ -25,5 +25,5 @@ docker build . --tag ansible
 popd
 
 echo '> cleaning up and pulling inspec_tools container...'
-#rm -rf ./docker
+rm -rf ./docker
 docker pull mitre/inspec_tools
