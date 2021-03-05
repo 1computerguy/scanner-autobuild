@@ -42,7 +42,7 @@ COPY ./dod-compliance-and-automation/vsphere/6.7/vsphere/inspec/vmware-vm-6.7-st
 COPY ./dod-compliance-and-automation/vsphere/6.7/vcsa/inspec/vmware-vcsa-6.7-stig-baseline /inspec/vmware-vcsa-6.7-stig-baseline
 
 # Set entrypoint permissions and accept license for InSpec
-RUN chmod +x /usr/local/bin/scan.sh && \
+RUN chmod +x /usr/local/bin/scan && \
     sed -i "s/<ver>/$(inspec -v)/" /etc/chef/accepted_licenses/inspec && \
     sed -i "s/<date>/$(date +"%Y-%m-%dT%T+00:00")/" /etc/chef/accepted_licenses/inspec
 
